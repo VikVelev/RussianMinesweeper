@@ -6,7 +6,7 @@ import engine as en
 
 en.initiateBinaryMatrix()
 en.generateMines()
-en.renderBase()
+en.renderBase(False)
 
 pygame.display.update();
 
@@ -14,20 +14,19 @@ pygame.display.update();
 while en.running:
     #---------------------------------
     for event in pygame.event.get():
+        
         if event.type == pygame.MOUSEBUTTONUP:
             mousePos = pygame.mouse.get_pos()
             coords = en.clickCollision(mousePos)
 
             x = coords[0]
-            y = coords[1]
-
-            if not x == None and not y == None:
-                print(en.baseMatrix[x,y])
-                #use the baseMatrix[x,y] for whatever here
-            else:
-                print("Already clicked once or not clickable.")
+            y = coords[1]           
             
-            en.renderBase()
+            en.renderBase(False)                                
+            
+            print(en.baseMatrix[x,y])
+
+            en.renderBase(en.searchForMines(x,y))
 
         if event.type == pygame.QUIT:
             en.running = False
