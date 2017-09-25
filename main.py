@@ -28,7 +28,7 @@ while en.running:
                 en.renderBase(False)                                
                 
                 print(en.baseMatrix[x,y])
-
+                en.countMines(x,y)
                 if en.searchForMines(x,y):
                     en.renderBase(True)
                     gameover = True

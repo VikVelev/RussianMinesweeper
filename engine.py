@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 #game matrix 
-columns = rows = 20
+columns = rows = 15
 baseMatrix = np.empty((columns, rows), dtype=object) #filled with objects containing each rectangle
 binaryMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s showing if a tile is clicked or clickable.
 coatMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s showing if a tile is clicked or clickable.
@@ -98,3 +98,12 @@ def searchForMines(tileX,tileY):
     if binaryMatrix[tileX,tileY] == 3:
         #the one you clicked is a mine
         return True
+
+def countMines(tileX,tileY):
+    mines = 0
+    for i in range(-1,2):
+        for j in range(-1,2):
+            if binaryMatrix[tileX+i,tileY+j] == 3:
+                mines += 1
+    print(mines)
+    return mines
