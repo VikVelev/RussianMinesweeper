@@ -103,15 +103,12 @@ def generateMines():
 
 def searchForMines(tileX,tileY):
     if binaryMatrix[tileX,tileY] == 1: #actually should be 0 but check main why it isn't
-        wayOut = True
-        enoughMines = 5
-        minesFound = 0
-            #think of an algorithm to expand and check for bombs here.
+        print("now traversing")
     if binaryMatrix[tileX,tileY] == 3:
         #the one you clicked is a mine
         return True
     if binaryMatrix[tileX,tileY] == 2:
-        print("already clicked")
+        print("already traversed")
 
 def countMines(tileX,tileY):
     mines = 0
@@ -132,5 +129,6 @@ def expandTile(tileX,tileY):
             if x < rows and y < columns and x >= 0 and y >= 0:
                 if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2:
                     binaryMatrix[x,y] = 2
+                    countMines(x,y)
                     expandTile(x,y)
                     

@@ -27,7 +27,8 @@ while en.running:
                                 
                 print(en.baseMatrix[x,y])
 
-                en.expandTile(x,y)
+                if not x == None and not y == None:
+                    en.expandTile(x,y)
                 en.renderBase(False)
                 
                 print(en.coatMatrix)
@@ -36,9 +37,10 @@ while en.running:
                     en.renderBase(True)
                     gameover = True
                     print("Game Over")
-
+                
                 text = en.basicFont.render(str(en.countMines(x,y)), True , (255,0,0))
-                en.screen.blit(text,text.get_rect())
+                en.baseMatrix[x,y].center = (en.baseMatrix[x,y].x+1/3*en.tileX,en.baseMatrix[x,y].y+2/9*en.tileY)
+                en.screen.blit(text, en.baseMatrix[x,y].center)
                            
         if event.type == pygame.QUIT:
             en.running = False
