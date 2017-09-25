@@ -12,7 +12,6 @@ pygame.display.update();
 
 gameover = False
 
-print(en.mineCount)
 #public static void Main()
 while en.running:
     #---------------------------------
@@ -27,10 +26,11 @@ while en.running:
                                 
                 print(en.baseMatrix[x,y])
 
-                # en.expandTile(x,y)
+                en.expandTile(x,y)
                 en.countMines(x,y)
 
-                en.renderBase(False)                                                
+                en.renderBase(False)
+                                                                
                 if en.searchForMines(x,y):
                     en.renderBase(True)
                     gameover = True

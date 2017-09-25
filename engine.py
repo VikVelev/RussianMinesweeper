@@ -17,7 +17,7 @@ coatMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s show
 #position of the tiles and tiles dimensions (Square)
 startPos = 10 #the starting position for X for each column
 posX = posY = 10 #the 10 is irrelevant here, just to have them initialized
-mineCount = ((random.randint(10,30))/100)*(columns*rows)
+mineCount = ((random.randint(5,20))/100)*(columns*rows)
 tileX = tileY = 50
 distanceBetween = tileX #the number is the distance between each tile
 
@@ -29,7 +29,7 @@ clock = pygame.time.Clock()
 
 #RGBcolors of the tiles
 tileColor = (8, 64, 128)
-tileNearColor = (8, 64, 196)
+tileNearColor = (255, 255, 255)
 clickedColor = (255, 255, 255)
 bombColor = (196, 15, 15)
 
@@ -68,7 +68,7 @@ def clickCollision(mousePos):
             temporaryMatrix[i,j] = baseMatrix[i,j].collidepoint(mousePos) #returns 1 or 0 depending on if its clicked
             if temporaryMatrix[i,j] == 1:
                 clickedMatrixCoords = (i,j)                
-                if not binaryMatrix[i,j] == 3:
+                if not binaryMatrix[i,j] == 3 and not binaryMatrix[i,j] == 2:
                     binaryMatrix[i,j] = temporaryMatrix[i,j]
                     coatMatrix[i,j] = temporaryMatrix[i,j]
     return clickedMatrixCoords;
@@ -100,6 +100,8 @@ def searchForMines(tileX,tileY):
     if binaryMatrix[tileX,tileY] == 3:
         #the one you clicked is a mine
         return True
+    if binaryMatrix[tileX,tileY] == 2:
+        print("already clicked")
 
 def countMines(tileX,tileY):
     mines = 0
@@ -111,12 +113,11 @@ def countMines(tileX,tileY):
     return mines
 
 def expandTile(tileX,tileY):
-    bombs = 0
     for i in range(-1,2):
         for j in range(-1,2):
-            if not binaryMatrix[tileX+i,tileY+j] == 3:
-                binaryMatrix[tileX+i,tileY+j] = 2
-                if bombs < 5:
-                    expandTile(tileX+i,tileY+j)
-            elif binaryMatrix[tileX+i,tileY+j] == 3:
-                bombs += 1
+            x = tileX + i
+            y = tileY + j
+            if x < rows and y < columns and x >= 0 and y >= 0:
+                if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2:
+                    binaryMatrix[x,y] = 2                
+                    expandTile(x,y)
