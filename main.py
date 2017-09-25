@@ -6,28 +6,35 @@ import engine as en
 
 en.initiateBinaryMatrix()
 en.generateMines()
-en.renderBase()
+en.renderBase(False)
 
 pygame.display.update();
+
+gameover = False
 
 #public static void Main()
 while en.running:
     #---------------------------------
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP:
-            mousePos = pygame.mouse.get_pos()
-            coords = en.clickCollision(mousePos)
+        if not gameover:
+            if event.type == pygame.MOUSEBUTTONUP:
+                mousePos = pygame.mouse.get_pos()
+                coords = en.clickCollision(mousePos)
 
-            x = coords[0]
-            y = coords[1]
-
-            if not x == None and not y == None:
+                x = coords[0]
+                y = coords[1]           
+                                
                 print(en.baseMatrix[x,y])
-                #use the baseMatrix[x,y] for whatever here
-            else:
-                print("Already clicked once or not clickable.")
-            
-            en.renderBase()
+
+                en.expandTile(x,y)
+                en.countMines(x,y)
+
+                en.renderBase(False)
+                                                                
+                if en.searchForMines(x,y):
+                    en.renderBase(True)
+                    gameover = True
+                    print("Game Over")
 
         if event.type == pygame.QUIT:
             en.running = False
