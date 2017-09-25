@@ -10,23 +10,29 @@ en.renderBase(False)
 
 pygame.display.update();
 
+gameover = False
+
+print(en.mineCount)
 #public static void Main()
 while en.running:
     #---------------------------------
     for event in pygame.event.get():
-        
-        if event.type == pygame.MOUSEBUTTONUP:
-            mousePos = pygame.mouse.get_pos()
-            coords = en.clickCollision(mousePos)
+        if not gameover:
+            if event.type == pygame.MOUSEBUTTONUP:
+                mousePos = pygame.mouse.get_pos()
+                coords = en.clickCollision(mousePos)
 
-            x = coords[0]
-            y = coords[1]           
-            
-            en.renderBase(False)                                
-            
-            print(en.baseMatrix[x,y])
+                x = coords[0]
+                y = coords[1]           
+                
+                en.renderBase(False)                                
+                
+                print(en.baseMatrix[x,y])
 
-            en.renderBase(en.searchForMines(x,y))
+                if en.searchForMines(x,y):
+                    en.renderBase(True)
+                    gameover = True
+                    print("Game Over")
 
         if event.type == pygame.QUIT:
             en.running = False

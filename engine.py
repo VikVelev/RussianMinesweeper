@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 #game matrix 
-columns = rows = 10
+columns = rows = 20
 baseMatrix = np.empty((columns, rows), dtype=object) #filled with objects containing each rectangle
 binaryMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s showing if a tile is clicked or clickable.
 coatMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s showing if a tile is clicked or clickable.
@@ -17,7 +17,7 @@ coatMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s show
 #position of the tiles and tiles dimensions (Square)
 startPos = 10 #the starting position for X for each column
 posX = posY = 10 #the 10 is irrelevant here, just to have them initialized
-mineCount = (10*(random.randint(1,4))/100)*(columns*rows)
+mineCount = ((random.randint(10,30))/100)*(columns*rows)
 tileX = tileY = 50
 distanceBetween = tileX #the number is the distance between each tile
 
@@ -96,4 +96,5 @@ def searchForMines(tileX,tileY):
                 wayOut = False
             #think of an algorithm to expand and check for bombs here.
     if binaryMatrix[tileX,tileY] == 3:
+        #the one you clicked is a mine
         return True
