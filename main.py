@@ -24,11 +24,13 @@ while en.running:
 
                 x = coords[0]
                 y = coords[1]           
-                
-                en.renderBase(False)                                
-                
+                                
                 print(en.baseMatrix[x,y])
+
+                # en.expandTile(x,y)
                 en.countMines(x,y)
+
+                en.renderBase(False)                                                
                 if en.searchForMines(x,y):
                     en.renderBase(True)
                     gameover = True

@@ -52,6 +52,8 @@ def renderBase(boolBombs): #it reads the binary matrix and renders it.
 
             if coatMatrix[x,y] == 1:
                 pygame.draw.rect(screen, clickedColor, baseMatrix[x,y])
+            elif binaryMatrix[x,y] == 2:
+                pygame.draw.rect(screen, tileNearColor, baseMatrix[x,y])
             elif binaryMatrix[x,y] == 3 and boolBombs:
                 pygame.draw.rect(screen, bombColor, baseMatrix[x,y])                
             else:
@@ -107,3 +109,14 @@ def countMines(tileX,tileY):
                 mines += 1
     print(mines)
     return mines
+
+def expandTile(tileX,tileY):
+    bombs = 0
+    for i in range(-1,2):
+        for j in range(-1,2):
+            if not binaryMatrix[tileX+i,tileY+j] == 3:
+                binaryMatrix[tileX+i,tileY+j] = 2
+                if bombs < 5:
+                    expandTile(tileX+i,tileY+j)
+            elif binaryMatrix[tileX+i,tileY+j] == 3:
+                bombs += 1
