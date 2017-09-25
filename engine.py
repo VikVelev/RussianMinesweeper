@@ -1,12 +1,22 @@
 import pygame
 import numpy as np
 import random
+from pygame.locals import *
 
 #game matrix 
 columns = rows = 15
 baseMatrix = np.empty((columns, rows), dtype=object) #filled with objects containing each rectangle
 binaryMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s showing if a tile is clicked or clickable.
-coatMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s showing if a tile is clicked or clickable.
+coatMatrix = np.empty((columns, rows), dtype=object) #filled with how many mines are actually nearby and should be the heighest layer
+textMatrix = np.empty((columns,rows), dtype=object) #filled with representations of the coatMatrix in text
+
+#textMatrix
+#____________
+#coatMatrix
+#____________
+#baseMatrix
+#____________
+#binaryMatrix
 
 #future referrence for the non-binary, binaryMatrix: 
 #0 means normal tile, 
@@ -17,7 +27,7 @@ coatMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s show
 #position of the tiles and tiles dimensions (Square)
 startPos = 10 #the starting position for X for each column
 posX = posY = 10 #the 10 is irrelevant here, just to have them initialized
-mineCount = ((random.randint(5,20))/100)*(columns*rows)
+mineCount = ((random.randint(10,20))/100)*(columns*rows)
 tileX = tileY = 50
 distanceBetween = tileX #the number is the distance between each tile
 
@@ -27,16 +37,21 @@ screen = pygame.display.set_mode((rows*distanceBetween, columns*distanceBetween)
 running = True
 clock = pygame.time.Clock()
 
+basicFont = pygame.font.SysFont(None,tileX);
+
 #RGBcolors of the tiles
 tileColor = (8, 64, 128)
 tileNearColor = (255, 255, 255)
 clickedColor = (255, 255, 255)
 bombColor = (196, 15, 15)
 
-def initiateBinaryMatrix():
+
+
+def initiateMatrices():
     for x in range(0, rows):
         for y in range (0, columns):
             binaryMatrix[x,y] = 0
+            coatMatrix[x,y] = 0
 
 def getBinaryMatrix():
     return binaryMatrix
@@ -91,11 +106,6 @@ def searchForMines(tileX,tileY):
         wayOut = True
         enoughMines = 5
         minesFound = 0
-        while wayOut:
-            print("Not implemented. Inf loop")
-            wayOut = False            
-            if minesFound == enoughMines:
-                wayOut = False
             #think of an algorithm to expand and check for bombs here.
     if binaryMatrix[tileX,tileY] == 3:
         #the one you clicked is a mine
@@ -107,9 +117,11 @@ def countMines(tileX,tileY):
     mines = 0
     for i in range(-1,2):
         for j in range(-1,2):
-            if binaryMatrix[tileX+i,tileY+j] == 3:
-                mines += 1
+            if tileX + i < rows and tileY + j < columns:
+                if binaryMatrix[tileX+i,tileY+j] == 3:
+                    mines += 1
     print(mines)
+    coatMatrix[tileX,tileY] = mines
     return mines
 
 def expandTile(tileX,tileY):
@@ -119,5 +131,6 @@ def expandTile(tileX,tileY):
             y = tileY + j
             if x < rows and y < columns and x >= 0 and y >= 0:
                 if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2:
-                    binaryMatrix[x,y] = 2                
+                    binaryMatrix[x,y] = 2
                     expandTile(x,y)
+                    
