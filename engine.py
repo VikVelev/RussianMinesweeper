@@ -44,8 +44,9 @@ tileColor = (8, 64, 128)
 tileNearColor = (255, 255, 255)
 clickedColor = (255, 255, 255)
 bombColor = (196, 15, 15)
+textColor = (15, 196, 15)
 
-
+ 
 
 def initiateMatrices():
     for x in range(0, rows):
@@ -64,8 +65,8 @@ def renderBase(boolBombs): #it reads the binary matrix and renders it.
             posY = y*distanceBetween
             
             baseMatrix[x,y] = pygame.Rect(posX, posY, tileX, tileY)
-
-            if coatMatrix[x,y] == 1:
+            
+            if binaryMatrix[x,y] == 1:
                 pygame.draw.rect(screen, clickedColor, baseMatrix[x,y])
             elif binaryMatrix[x,y] == 2:
                 pygame.draw.rect(screen, tileNearColor, baseMatrix[x,y])
@@ -100,35 +101,46 @@ def generateMines():
         else:
             binaryMatrix[mineX, mineY] = 3
             mineCount_tmp += 1
+    for x in range(0,rows):
+        for y in range(0,columns):
+            print(baseMatrix[x,y])  
+            countMines(x,y)
 
 def searchForMines(tileX,tileY):
-    if binaryMatrix[tileX,tileY] == 1: #actually should be 0 but check main why it isn't
-        print("now traversing")
-    if binaryMatrix[tileX,tileY] == 3:
-        #the one you clicked is a mine
-        return True
-    if binaryMatrix[tileX,tileY] == 2:
-        print("already traversed")
+    if not tileX == None and not tileY == None:
+        if binaryMatrix[tileX,tileY] == 1: #actually should be 0 but check main why it isn't
+            print("now traversing")
+        if binaryMatrix[tileX,tileY] == 3:
+            #the one you clicked is a mine
+            return True
+        if binaryMatrix[tileX,tileY] == 2:
+            print("already traversed")
 
 def countMines(tileX,tileY):
-    mines = 0
-    for i in range(-1,2):
-        for j in range(-1,2):
-            if tileX + i < rows and tileY + j < columns:
-                if binaryMatrix[tileX+i,tileY+j] == 3:
-                    mines += 1
-    print(mines)
-    coatMatrix[tileX,tileY] = mines
-    return mines
+    if not tileX == None and not tileY == None:
+        mines = 0
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if tileX + i < rows and tileY + j < columns:
+                    if binaryMatrix[tileX+i,tileY+j] == 3:
+                        mines += 1
+        coatMatrix[tileX,tileY] = mines
+        return mines
 
-def expandTile(tileX,tileY):
+def expandTile(tileX,tileY):              
     for i in range(-1,2):
         for j in range(-1,2):
             x = tileX + i
             y = tileY + j
             if x < rows and y < columns and x >= 0 and y >= 0:
-                if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2:
+                if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2 and coatMatrix[x,y] == 0:    
                     binaryMatrix[x,y] = 2
-                    countMines(x,y)
                     expandTile(x,y)
-                    
+
+def renderText():
+    for x in range(0,rows):
+        for y in range(0,columns):
+            baseMatrix[x,y].center = (baseMatrix[x,y].x + 1 / 3 * tileX, baseMatrix[x,y].y + 2 / 9 * tileY)            
+            textMatrix[x,y] = basicFont.render(str(countMines(x,y)), True, textColor)
+            screen.blit(textMatrix[x,y], baseMatrix[x,y].center)
+            
