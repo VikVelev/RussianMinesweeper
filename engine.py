@@ -103,7 +103,6 @@ def generateMines():
             mineCount_tmp += 1
     for x in range(0,rows):
         for y in range(0,columns):
-            print(baseMatrix[x,y])  
             countMines(x,y)
 
 def searchForMines(tileX,tileY):
@@ -117,8 +116,8 @@ def searchForMines(tileX,tileY):
             print("already traversed")
 
 def countMines(tileX,tileY):
+    mines = 0    
     if not tileX == None and not tileY == None:
-        mines = 0
         for i in range(-1,2):
             for j in range(-1,2):
                 if tileX + i < rows and tileY + j < columns:
@@ -141,6 +140,10 @@ def renderText():
     for x in range(0,rows):
         for y in range(0,columns):
             baseMatrix[x,y].center = (baseMatrix[x,y].x + 1 / 3 * tileX, baseMatrix[x,y].y + 2 / 9 * tileY)            
-            textMatrix[x,y] = basicFont.render(str(countMines(x,y)), True, textColor)
+            if not binaryMatrix[x,y] == 3:
+                textMatrix[x,y] = basicFont.render(str(countMines(x,y)), True, textColor)
+            else:
+                textMatrix[x,y] = basicFont.render("M", True, (0,0,0))
+
             screen.blit(textMatrix[x,y], baseMatrix[x,y].center)
-            
+        
