@@ -107,13 +107,13 @@ def generateMines():
 
 def searchForMines(tileX,tileY):
     if not tileX == None and not tileY == None:
-        if binaryMatrix[tileX,tileY] == 1: #actually should be 0 but check main why it isn't
-            print("now traversing")
+        # if binaryMatrix[tileX,tileY] == 1: #actually should be 0 but check main why it isn't
+        #     print("now traversing")
         if binaryMatrix[tileX,tileY] == 3:
             #the one you clicked is a mine
             return True
-        if binaryMatrix[tileX,tileY] == 2:
-            print("already traversed")
+        # if binaryMatrix[tileX,tileY] == 2:
+        #     print("")
 
 def countMines(tileX,tileY):
     mines = 0    
@@ -128,16 +128,19 @@ def countMines(tileX,tileY):
         coatMatrix[tileX,tileY] = mines
         return mines
 
-def expandTile(tileX,tileY):              
+def expandTile(tileX,tileY,l_non0):
+    layersOfNon0 = l_non0          
     for i in range(-1,2):
         for j in range(-1,2):
             x = tileX + i
             y = tileY + j
             if x < rows >= 0 and y < columns and x >= 0 and y >= 0:
-                if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2 and coatMatrix[x,y] == 0:    
+                if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2:    
                     binaryMatrix[x,y] = 2
-                    expandTile(x,y)
-
+                    if not coatMatrix[x,y] == 0:
+                        layersOfNon0 += 1
+                    else:
+                        expandTile(x,y,layersOfNon0)
 
 def renderText():
     for x in range(0,rows):
@@ -146,7 +149,7 @@ def renderText():
             if not binaryMatrix[x,y] == 3:
                 textMatrix[x,y] = basicFont.render(str(countMines(x,y)), True, textColor)
             else:
-                textMatrix[x,y] = basicFont.render("M", True, (0,0,0))
+                textMatrix[x,y] = basicFont.render("M", True, (0,0,0)) #M stands for Mine
 
             screen.blit(textMatrix[x,y], baseMatrix[x,y].center)
         

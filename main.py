@@ -26,14 +26,14 @@ while en.running:
 
             if not x == None and not y == None:
                 if en.countMines(x,y) == 0:
-                    en.expandTile(x,y)
+                    en.expandTile(x,y,0)
             if en.searchForMines(x,y):
                 en.renderBase(True)
                 gameover = True
                 print("Game Over")
             else:
                 en.renderBase(False)
-                
+
             en.renderText()
                            
         if event.type == pygame.QUIT:
