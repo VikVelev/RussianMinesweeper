@@ -16,26 +16,26 @@ pygame.display.update();
 while en.running:
     #---------------------------------
     for event in pygame.event.get():
-    
-        if event.type == pygame.MOUSEBUTTONUP:
-            mousePos = pygame.mouse.get_pos()
-            coords = en.clickCollision(mousePos)
+        if not gameover:
+            if event.type == pygame.MOUSEBUTTONUP:
+                mousePos = pygame.mouse.get_pos()
+                coords = en.clickCollision(mousePos)
 
-            x = coords[0]
-            y = coords[1]           
+                x = coords[0]
+                y = coords[1]           
 
-            if not x == None and not y == None:
-                if en.countMines(x,y) == 0:
-                    en.expandTile(x,y,0)
-            if en.searchForMines(x,y):
-                en.renderBase(True)
-                gameover = True
-                print("Game Over")
-            else:
-                en.renderBase(False)
-
-            en.renderText()
-                           
+                if not x == None and not y == None:
+                    if en.countMines(x,y) == 0:
+                        en.expandTile(x,y,0)
+                if en.searchForMines(x,y):
+                    en.renderBase(True)
+                    en.renderText(True)
+                    gameover = True
+                    print("Game Over")
+                else:
+                    en.renderBase(False)
+                    en.renderText(False)            
+                                        
         if event.type == pygame.QUIT:
             en.running = False
 

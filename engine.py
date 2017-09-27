@@ -142,14 +142,17 @@ def expandTile(tileX,tileY,l_non0):
                     else:
                         expandTile(x,y,layersOfNon0)
 
-def renderText():
+def renderText(boolBombs):
     for x in range(0,rows):
         for y in range(0,columns):
             baseMatrix[x,y].center = (baseMatrix[x,y].x + 1 / 3 * tileX, baseMatrix[x,y].y + 2 / 9 * tileY)            
-            if not binaryMatrix[x,y] == 3:
-                textMatrix[x,y] = basicFont.render(str(countMines(x,y)), True, textColor)
-            else:
+            if not binaryMatrix[x,y] == 3 and not coatMatrix[x,y] == 0:
+                if binaryMatrix[x,y] == 2 or binaryMatrix[x,y] == 1:
+                    textMatrix[x,y] = basicFont.render(str(countMines(x,y)), True, textColor)
+                    screen.blit(textMatrix[x,y], baseMatrix[x,y].center)            
+            elif binaryMatrix[x,y] == 3 and boolBombs:
                 textMatrix[x,y] = basicFont.render("M", True, (0,0,0)) #M stands for Mine
+                screen.blit(textMatrix[x,y], baseMatrix[x,y].center)
+                
 
-            screen.blit(textMatrix[x,y], baseMatrix[x,y].center)
         
