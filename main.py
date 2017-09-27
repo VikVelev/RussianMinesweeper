@@ -33,13 +33,8 @@ while en.running:
                 print("Game Over")
             else:
                 en.renderBase(False)
-            
-            print(en.coatMatrix)
-
-            #text = en.basicFont.render(str(en.countMines(x,y)), True , en.textColor)
+                
             en.renderText()
-            #en.baseMatrix[x,y].center = (en.baseMatrix[x,y].x + 1 / 3 * en.tileX, en.baseMatrix[x,y].y + 2 / 9 * en.tileY)
-            #en.screen.blit(text, en.baseMatrix[x,y].center)
                            
         if event.type == pygame.QUIT:
             en.running = False
