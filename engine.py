@@ -9,6 +9,7 @@ baseMatrix = np.empty((columns, rows), dtype=object) #filled with objects contai
 binaryMatrix = np.empty((columns, rows), dtype=object) #filled with 1s and 0s showing if a tile is clicked or clickable.
 coatMatrix = np.empty((columns, rows), dtype=object) #filled with how many mines are actually nearby and should be the heighest layer
 textMatrix = np.empty((columns,rows), dtype=object) #filled with representations of the coatMatrix in text
+flagMatrix = np.empty((columns, rows), dtype=object) #filled with flagged shit
 
 #textMatrix
 #____________
@@ -19,6 +20,7 @@ textMatrix = np.empty((columns,rows), dtype=object) #filled with representations
 #binaryMatrix
 
 #future referrence for the non-binary, binaryMatrix: 
+#-1 means starting point
 #0 means normal tile, 
 #1 means clicked and empty
 #2 means bombs near this one
@@ -45,7 +47,7 @@ tileNearColor = (255, 255, 255)
 clickedColor = (255, 255, 255)
 bombColor = (196, 15, 15)
 textColor = (15, 196, 15)
-
+flagColor = (255,255,100)
  
 
 def initiateMatrices():
@@ -53,6 +55,7 @@ def initiateMatrices():
         for y in range (0, columns):
             binaryMatrix[x,y] = 0
             coatMatrix[x,y] = 0
+            flagMatrix[x,y] = 0
 
 def getBinaryMatrix():
     return binaryMatrix
@@ -68,12 +71,17 @@ def renderBase(boolBombs): #it reads the binary matrix and renders it.
             
             if binaryMatrix[x,y] == 1:
                 pygame.draw.rect(screen, clickedColor, baseMatrix[x,y])
+                if flagMatrix[x,y] == 1:
+                    pygame.draw.rect(screen, flagColor, baseMatrix[x,y])
             elif binaryMatrix[x,y] == 2:
                 pygame.draw.rect(screen, tileNearColor, baseMatrix[x,y])
             elif binaryMatrix[x,y] == 3 and boolBombs:
-                pygame.draw.rect(screen, bombColor, baseMatrix[x,y])                
+                pygame.draw.rect(screen, bombColor, baseMatrix[x,y])        
             else:
-                pygame.draw.rect(screen, tileColor, baseMatrix[x,y])
+                if flagMatrix[x,y] == 1:
+                    pygame.draw.rect(screen, flagColor, baseMatrix[x,y])
+                else:
+                    pygame.draw.rect(screen, tileColor, baseMatrix[x,y])
 
 def clickCollision(mousePos):
     clickedMatrixCoords = (None, None)
@@ -86,7 +94,6 @@ def clickCollision(mousePos):
                 clickedMatrixCoords = (i,j)                
                 if not binaryMatrix[i,j] == 3 and not binaryMatrix[i,j] == 2:
                     binaryMatrix[i,j] = temporaryMatrix[i,j]
-                    coatMatrix[i,j] = temporaryMatrix[i,j]
     return clickedMatrixCoords;
 
 def generateMines():
@@ -96,7 +103,7 @@ def generateMines():
         mineX = random.randint(0, columns-1)
         mineY = random.randint(0, rows-1)
 
-        if binaryMatrix[mineX,mineY] == 3:
+        if binaryMatrix[mineX,mineY] == 3 or binaryMatrix[mineX,mineY] == -1:
             continue
         else:
             binaryMatrix[mineX, mineY] = 3
@@ -105,15 +112,10 @@ def generateMines():
         for y in range(0,columns):
             countMines(x,y)
 
-def searchForMines(tileX,tileY):
+def isMine(tileX,tileY):
     if not tileX == None and not tileY == None:
-        # if binaryMatrix[tileX,tileY] == 1: #actually should be 0 but check main why it isn't
-        #     print("now traversing")
         if binaryMatrix[tileX,tileY] == 3:
-            #the one you clicked is a mine
             return True
-        # if binaryMatrix[tileX,tileY] == 2:
-        #     print("")
 
 def countMines(tileX,tileY):
     mines = 0    
@@ -135,7 +137,7 @@ def expandTile(tileX,tileY,l_non0):
             x = tileX + i
             y = tileY + j
             if x < rows >= 0 and y < columns and x >= 0 and y >= 0:
-                if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2:    
+                if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2: 
                     binaryMatrix[x,y] = 2
                     if not coatMatrix[x,y] == 0:
                         layersOfNon0 += 1
@@ -145,8 +147,8 @@ def expandTile(tileX,tileY,l_non0):
 def renderText(boolBombs):
     for x in range(0,rows):
         for y in range(0,columns):
-            baseMatrix[x,y].center = (baseMatrix[x,y].x + 1 / 3 * tileX, baseMatrix[x,y].y + 2 / 9 * tileY)            
-            if not binaryMatrix[x,y] == 3 and not coatMatrix[x,y] == 0:
+            baseMatrix[x,y].center = (baseMatrix[x,y].x + 2 / 7  * tileX, baseMatrix[x,y].y + 2 / 9 * tileY)       
+            if not binaryMatrix[x,y] == 3 and not coatMatrix[x,y] == 0 and not flagMatrix[x,y] == 1:
                 if binaryMatrix[x,y] == 2 or binaryMatrix[x,y] == 1:
                     textMatrix[x,y] = basicFont.render(str(countMines(x,y)), True, textColor)
                     screen.blit(textMatrix[x,y], baseMatrix[x,y].center)            
