@@ -120,8 +120,10 @@ def countMines(tileX,tileY):
     if not tileX == None and not tileY == None:
         for i in range(-1,2):
             for j in range(-1,2):
-                if tileX + i < rows and tileY + j < columns:
-                    if binaryMatrix[tileX+i,tileY+j] == 3:
+                x = tileX + i
+                y = tileY + j
+                if x < rows and y < columns and x >= 0 and y >= 0:
+                    if binaryMatrix[x,y] == 3:
                         mines += 1
         coatMatrix[tileX,tileY] = mines
         return mines
@@ -131,10 +133,11 @@ def expandTile(tileX,tileY):
         for j in range(-1,2):
             x = tileX + i
             y = tileY + j
-            if x < rows and y < columns and x >= 0 and y >= 0:
+            if x < rows >= 0 and y < columns and x >= 0 and y >= 0:
                 if not binaryMatrix[x,y] == 3 and not binaryMatrix[x,y] == 2 and coatMatrix[x,y] == 0:    
                     binaryMatrix[x,y] = 2
                     expandTile(x,y)
+
 
 def renderText():
     for x in range(0,rows):
