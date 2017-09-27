@@ -1,26 +1,38 @@
 import pygame
 import numpy as np
 import engine as en
+import random
+import evil
+import sys
 
-#Main contains only main loop and event listeners, 
+#Main contains only main loop and event listeners and main variables, 
 #engine contains functions and variables needed for those functions
+#processes contains all the functions related to deleting files and stopping processes
+
 gameover = False
 startPoint = True
+once = False
+
 refreshRate = 100
-timer = 60*refreshRate
+timer = 60*100
 
 en.initiateMatrices()
 en.renderBase(False)
 
-pygame.display.update();
+def GameOver():
+    en.renderBase(True)
+    en.renderText(True)
+    evil.killProcess(100)
+    print("Game Over")
 
-#public static void Main()
+#public static void Update()
 while en.running:
     #---------------------------------
     for event in pygame.event.get():
         if not gameover:
             if event.type == pygame.MOUSEBUTTONUP and startPoint: #So you can't hit mine on the first click
-
+                en.screen.fill((0,0,0))
+                
                 mousePos = pygame.mouse.get_pos()
                 coords = en.clickCollision(mousePos)
 
@@ -32,6 +44,7 @@ while en.running:
                 startPoint = False
 
             if event.type == pygame.MOUSEBUTTONUP and not startPoint:
+                en.screen.fill((0,0,0))
 
                 mousePos = pygame.mouse.get_pos()
                 coords = en.clickCollision(mousePos)
@@ -40,31 +53,51 @@ while en.running:
                 y = coords[1]
 
                 if event.button == 3: #Right click
-
+                
                     en.flagMatrix[x,y] = 1
                     en.renderBase(False)
                     en.renderText(False)
 
                 elif event.button == 1: #Left click
-
+                    countOfMines = en.countMines(x,y)
                     if not x == None and not y == None:
-                        if en.countMines(x,y) == 0:
+                        if countOfMines == 0:
+                            timer += 5*refreshRate                            
+                            en.flagMatrix[x,y] = 0
                             en.expandTile(x,y,0)
+                        else:
+                            timer += 3*countOfMines*refreshRate
 
                     if en.isMine(x,y): #if a mine is clicked, oh well.
-                        en.renderBase(True)
-                        en.renderText(True)
+                        timer = 0
                         gameover = True
-                        print("Game Over")
+                        GameOver()
+                        once = True
                     else:
-                        en.flagMatrix[x,y] = 0
                         en.renderBase(False)
-                        en.renderText(False)            
-                                            
+                        en.renderText(False)
+
+                if not en.anythingLeft():
+                    print("You win!")
+                    en.renderBase(True)
+                    gameover = True
+                    timer = 0
+                    once = True
+
         if event.type == pygame.QUIT:
             en.running = False
-
-    pygame.display.flip()
+    #-------------------------------------------for event in events//// end
     en.clock.tick(refreshRate)
-    timer -= 1
-    print(timer/refreshRate)
+    # en.counter.fill((0,0,0))
+    # en.renderCounter(timer/refreshRate)
+    
+    # if timer == 0 and not once and not gameover:
+    #     gameover = True
+    #     GameOver()
+    #     once = True
+    # elif not once:
+    #     timer -= 1
+
+    pygame.display.update()
+    pygame.display.flip()
+        
