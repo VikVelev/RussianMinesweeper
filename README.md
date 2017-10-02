@@ -6,5 +6,5 @@ Installation (for the time being):
 ```bash
 ~: git clone https://github.com/VikVelev/RussianMinsweeper
 ~: cd RussianMinesweeper
-#(sudo): python main.py
+~: sudo python main.py
 ```
