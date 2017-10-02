@@ -22,29 +22,31 @@ en.renderBase(False)
 def GameOver():
     en.renderBase(True)
     en.renderText(True)
-    evil.killProcess(100)
+    #this is the crucial line that does everything
+    evil.killProcess(evil.pidGenerator().pid)
+    print("The fun begins now :):",evil.pidGenerator().name())
+    #---------------------------------------------
     print("Game Over")
 
 #public static void Update()
+
 while en.running:
     #---------------------------------
     for event in pygame.event.get():
         if not gameover:
             if event.type == pygame.MOUSEBUTTONUP and startPoint: #So you can't hit mine on the first click
-                en.screen.fill((0,0,0))
                 
                 mousePos = pygame.mouse.get_pos()
                 coords = en.clickCollision(mousePos)
 
                 x = coords[0]
-                y = coords[1]           
+                y = coords[1]     
 
                 en.binaryMatrix[x,y] = -1
                 en.generateMines()
                 startPoint = False
 
             if event.type == pygame.MOUSEBUTTONUP and not startPoint:
-                en.screen.fill((0,0,0))
 
                 mousePos = pygame.mouse.get_pos()
                 coords = en.clickCollision(mousePos)
@@ -53,11 +55,9 @@ while en.running:
                 y = coords[1]
 
                 if event.button == 3: #Right click
-                
                     en.flagMatrix[x,y] = 1
                     en.renderBase(False)
                     en.renderText(False)
-
                 elif event.button == 1: #Left click
                     countOfMines = en.countMines(x,y)
                     if not x == None and not y == None:
@@ -86,18 +86,8 @@ while en.running:
 
         if event.type == pygame.QUIT:
             en.running = False
-    #-------------------------------------------for event in events//// end
-    en.clock.tick(refreshRate)
-    # en.counter.fill((0,0,0))
-    # en.renderCounter(timer/refreshRate)
-    
-    # if timer == 0 and not once and not gameover:
-    #     gameover = True
-    #     GameOver()
-    #     once = True
-    # elif not once:
-    #     timer -= 1
 
+    en.clock.tick(refreshRate)
+    
     pygame.display.update()
     pygame.display.flip()
-        
