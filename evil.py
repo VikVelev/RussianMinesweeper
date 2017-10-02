@@ -1,6 +1,8 @@
 import psutil
 import random
 import numpy as np
+pidArray = np.empty(0, dtype=object) #filled with processess
+
 
 def pidGenerator():
     
@@ -8,7 +10,7 @@ def pidGenerator():
     for proc in psutil.process_iter():
         numberProcs += 1
 
-    pidArray = np.empty(numberProcs, dtype=object) #filled with objects containing each rectangle
+    pidArray = np.empty(numberProcs, dtype=object) #filled with processess
     i = 0; 
     for proc in psutil.process_iter():
         pidArray[i] = proc
@@ -23,5 +25,5 @@ def showProcesses():
 def killProcess(pid):
     for proc in psutil.process_iter():
         if proc.pid == pid:
-            print("Killed",proc.name())
+            print("Killing...",proc.name())
             proc.kill()

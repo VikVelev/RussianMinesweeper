@@ -23,9 +23,11 @@ def GameOver():
     en.renderBase(True)
     en.renderText(True)
     #this is the crucial line that does everything
-    evil.killProcess(evil.pidGenerator().pid)
-    print("The fun begins now :):",evil.pidGenerator().name())
-    #---------------------------------------------
+    try:
+        evil.killProcess(evil.pidGenerator().pid)
+        print("The fun begins now :):",evil.pidGenerator().name())
+    except:
+        print("use sudo :)")#---------------------------------------------
     print("Game Over")
 
 #public static void Update()
